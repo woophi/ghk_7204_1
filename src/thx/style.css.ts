@@ -7,13 +7,9 @@ const container = style({
   alignItems: 'center',
   padding: '0 1rem',
   textAlign: 'center',
-});
-
-const rocket = style({
-  marginTop: '9rem',
+  minHeight: '100vh',
 });
 
 export const thxSt = {
   container,
-  rocket,
 };

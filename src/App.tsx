@@ -1,96 +1,99 @@
 import { Button } from '@alfalab/core-components/button/cssm';
 import { Collapse } from '@alfalab/core-components/collapse/cssm';
 import { Gap } from '@alfalab/core-components/gap/cssm';
-import { Grid } from '@alfalab/core-components/grid/cssm';
+import { List } from '@alfalab/core-components/list/cssm';
 import { PureCell } from '@alfalab/core-components/pure-cell/cssm';
+import { Status } from '@alfalab/core-components/status/cssm';
 import { Typography } from '@alfalab/core-components/typography/cssm';
-import { BriefcaseMIcon } from '@alfalab/icons-glyph/BriefcaseMIcon';
-import { BubbleLinesMIcon } from '@alfalab/icons-glyph/BubbleLinesMIcon';
-import { ChartColumnThreeAscArrowMIcon } from '@alfalab/icons-glyph/ChartColumnThreeAscArrowMIcon';
+import { CategoryCommisionMIcon } from '@alfalab/icons-glyph/CategoryCommisionMIcon';
+import { CheckmarkCompactMIcon } from '@alfalab/icons-glyph/CheckmarkCompactMIcon';
 import { ChevronDownMIcon } from '@alfalab/icons-glyph/ChevronDownMIcon';
 import { ChevronUpMIcon } from '@alfalab/icons-glyph/ChevronUpMIcon';
-import { CrownMIcon } from '@alfalab/icons-glyph/CrownMIcon';
-import { ShieldMIcon } from '@alfalab/icons-glyph/ShieldMIcon';
-import { SquareAcademicCapMIcon } from '@alfalab/icons-glyph/SquareAcademicCapMIcon';
-import { StarPointerMIcon } from '@alfalab/icons-glyph/StarPointerMIcon';
+import { CrossCompactMIcon } from '@alfalab/icons-glyph/CrossCompactMIcon';
 import { useEffect, useState } from 'react';
-import expert from './assets/expert.png';
 import hb from './assets/hb.png';
-import oneImg from './assets/one.png';
-import stud1 from './assets/stud_1.png';
-import stud2 from './assets/stud_2.png';
-import stud3 from './assets/stud_3.png';
-import stud4 from './assets/stud_4.png';
-import threeImg from './assets/three.png';
-import twoImg from './assets/two.png';
+import img1 from './assets/img1.png';
+import img2 from './assets/img2.png';
+import img3 from './assets/img3.png';
+import { SelectionSlider } from './components/SelectionSlider';
 import { LS, LSKeys } from './ls';
 import { appSt } from './style.css';
+import { ThxLayout } from './thx/ThxLayout';
 
-const LINK =
-  'alfabank://sdui_screen?screenName=InvestmentLongread&fromCurrent=true&shouldUseBottomSafeArea=true&endpoint=v1/invest-main-screen-view/investment-longread/94356%3flocation=AM%26campaignCode=GH';
-
-if (LS.getItem(LSKeys.ShowThx, false)) {
-  window.location.replace(LINK);
-}
-
-const itemsWG = [
+const forWhom = [
   {
-    icon: <ShieldMIcon color="#fff" />,
-    title: 'Страховку от потерь на фондовом рынке на 30 дней',
+    title: 'Опытным трейдерам',
+    subtitle: 'Хочешь торговать крупнее без рисков',
+    img: img1,
   },
   {
-    icon: <BubbleLinesMIcon color="#fff" />,
-    title: 'В социальной сети Альфа-Инвестиции статус участника, прошедшего обучающий трек от Альфа-Банка',
+    title: 'Уверенным новичкам',
+    subtitle: 'Готов проверить себя в профессиональных условиях',
+    img: img2,
   },
   {
-    icon: <ChartColumnThreeAscArrowMIcon color="#fff" />,
-    title: 'Возможность поделиться успехами в обучении и инвестировании с родителями и друзьями',
-  },
-  {
-    icon: <StarPointerMIcon color="#fff" />,
-    title: 'Стикер на смартфон для оплаты покупок с эксклюзивным дизайном',
-  },
-];
-const itemsExpert = [
-  {
-    icon: <BriefcaseMIcon width={16} height={16} color="#fff" />,
-    title: 'Опыт работы',
-    text: 'Опыт с 2011 года. Общий стаж работы с клиентами Альфа‑Банка составляет более 4 лет.',
-  },
-  {
-    icon: <CrownMIcon width={16} height={16} color="#fff" />,
-    title: 'Специализация',
-    text: 'Анализ рыночных взаимосвязей, с углубленным изучением финансового менеджмента компаний и технического анализа',
-  },
-  {
-    icon: <SquareAcademicCapMIcon width={16} height={16} color="#fff" />,
-    title: 'Образование',
-    text: 'Диплом с отличием Финансового Университета РФ и Бакалавриат Американского Университета Bloomsburg University of State PA',
+    title: 'Тем, кто ищет альтернативу',
+    subtitle: 'Устал от давления собственных денег и нестабильной торговли',
+    img: img3,
   },
 ];
 
 const faqs = [
   {
-    question: 'С какого возраста можно учиться?',
-    answers: ['Рекомендуем с 14 лет, так как открыть брокерский счет на свое имя можно только с 14 лет'],
+    question: 'Как и когда я получу выплату?',
+    answers: [
+      'После успешного прохождения Challenge вы получаете Funded-аккаунт. Прибыль, заработанная на нём, выплачивается по итогам торгового периода. Вы подаёте запрос на вывод в личном кабинете, и средства поступают на вашу карту или банковский счёт в течение 14 дней. Все условия выплат зафиксированы в договоре-оферте.',
+    ],
   },
   {
-    question: 'Сколько длится обучение?',
-    answers: ['Первый поток длится 30 дней'],
+    question: 'Сколько я могу заработать?',
+    answers: [
+      'Вы получаете до 70% прибыли, заработанной на Funded-аккаунте. Например, на счёте 100 000 ₽ при достижении +10% прибыли ваш доход составит 7 000 ₽ при вложении всего 2 000 ₽ за участие',
+    ],
   },
   {
-    question: 'Возможно ли продолжить обучение?',
-    answers: ['Да, будет доступен дополнительный поток для желающих получить дополнительные углубленные знания'],
+    question: 'Есть ли скрытые комиссии?',
+    answers: [
+      'Нет. Вы оплачиваете только стоимость участия в Challenge — это фиксированная сумма, указанная в тарифе. При торговле на счёте взимаются только биржевые комиссии (как при обычной торговле). Брокерская комиссия не взимается. Никаких подписок, ежемесячных платежей или дополнительных сборов.',
+    ],
   },
   {
-    question: 'Какую максимальную сумму можно инвестировать?',
-    answers: ['Максимальная сумма инвестиций без согласия родителя — 5 000₽, с согласия родителя — 30 000₽'],
+    question: 'Что такое Challenge и как он проходит?',
+    answers: [
+      'Challenge — это оценочный этап, на котором вы торгуете на виртуальном счёте с реальными рыночными котировками. Ваша цель — достичь прибыли +10% от баланса, не превысив максимальную просадку 5%, за минимум 5 торговых дней. Если условия выполнены — вы получаете Funded-аккаунт и начинаете зарабатывать.',
+    ],
+  },
+  {
+    question: 'Что будет, если я не пройду Challenge?',
+    answers: [
+      'Если баланс вашего счёта снизится на 1% и более от стартового — Challenge останавливается. Вы теряете только стоимость участия (от 2 000 ₽), а не весь виртуальный счёт. Вы можете попробовать снова — оплатив повторный Challenge со скидкой. По статистике, 30-40% успешных трейдеров проходят не с первой попытки.',
+    ],
+  },
+  {
+    question: 'Рискую ли я своими деньгами?',
+    answers: [
+      'Нет. Торговля ведётся на виртуальном счёте с реальными котировками. Ваш максимальный риск — это стоимость участия в Challenge (от 2 000 ₽). Вы не можете потерять больше этой суммы. В отличие от торговли на собственном счёте, где убытки не ограничены.',
+    ],
+  },
+  {
+    question: 'Почему нельзя совершать сделки короче 1 минуты?',
+    answers: [
+      'Это ограничение защищает от манипулятивных стратегий (арбитраж задержек, эксплуатация спредов на новостях), которые не работают в реальной торговле. Мы оцениваем навык устойчивой прибыльной торговли, а не умение использовать технические уязвимости. Все крупные проп-компании имеют аналогичное ограничение.',
+    ],
   },
 ];
 
+const YOUR_PART = 70;
+const SUM_HUNDLE = 100_000;
+
 export const App = () => {
   const [loading, setLoading] = useState(false);
-  const [collapsedItems, setCollapsedItem] = useState<string[]>([]);
+  const [collapsedItems, setCollapsedItem] = useState<string[]>(['special']);
+  const [selectedTab, setSelectedTab] = useState('5%');
+  const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
+
+  const income = (YOUR_PART / 100) * ((selectedTab.replace('%', '') as unknown as number) / 100) * SUM_HUNDLE;
+  const netIncome = income * (YOUR_PART / 100);
 
   useEffect(() => {
     if (!LS.getItem(LSKeys.UserId, null)) {
@@ -99,25 +102,32 @@ export const App = () => {
   }, []);
 
   const submit = () => {
-    window.gtag('event', '7096_start_course', { var: 'var2' });
     setLoading(true);
-    //  LS.setItem(LSKeys.ShowThx, true);
     setLoading(false);
-    window.location.replace(LINK);
+    setThx(true);
   };
+
+  if (thxShow) {
+    return <ThxLayout />;
+  }
 
   return (
     <>
       <div className={appSt.container}>
         <div className={appSt.glass}>
-          <img src={hb} width="100%" height={238} alt="hb" style={{ objectFit: 'contain', margin: '0 auto' }} />
-          <Typography.TitleResponsive tag="h1" view="medium" font="system" weight="medium" color="primary-inverted">
-            Обучение инвестициям с наставником за 30 дней
+          <img src={hb} width="100%" height={156} alt="hb" style={{ objectFit: 'contain', margin: '0 auto' }} />
+          <Typography.TitleResponsive
+            style={{ maxWidth: '235px' }}
+            tag="h1"
+            view="large"
+            font="system"
+            weight="medium"
+            color="primary-inverted"
+          >
+            Получите счёт на 100 000 ₽
           </Typography.TitleResponsive>
-          <Typography.Text view="primary-medium" color="primary-inverted">
-            Для вашего ребенка от 14 лет с одним из лучших инвестиционных брокеров
-            <br />
-            Альфа-Банка
+          <Typography.Text view="primary-small" color="primary-inverted">
+            Оплатите <b>2 000 ₽</b> и получайте до 70% прибыли после успешного отбора
           </Typography.Text>
         </div>
 
@@ -129,50 +139,43 @@ export const App = () => {
           weight="medium"
           color="primary-inverted"
         >
-          Чему научитесь
+          Как проходит отбор
         </Typography.TitleResponsive>
 
-        <PureCell>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={oneImg} width={48} height={48} alt="цифра 1" />
+        <Typography.Text view="primary-small" color="secondary-inverted">
+          Необходимо достичь <span style={{ color: '#0CC44D' }}>+2%</span> доходности портфеля, не превышая просадку{' '}
+          <span style={{ color: '#EF3124' }}>−1%</span> в течение одной недели
+        </Typography.Text>
+
+        <SelectionSlider />
+
+        <Typography.Text view="primary-small" color="secondary-inverted">
+          Если вы не пройдете отбор, можно попробовать снова при повторной оплате
+        </Typography.Text>
+
+        <Typography.TitleResponsive
+          style={{ marginTop: '12px' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="medium"
+          color="primary-inverted"
+        >
+          После успешного прохождения
+        </Typography.TitleResponsive>
+
+        <PureCell className={appSt.glassBanner}>
+          <PureCell.Graphics verticalAlign="top">
+            <CategoryCommisionMIcon color="#fff" />
           </PureCell.Graphics>
           <PureCell.Content>
             <PureCell.Main>
-              <Typography.Text view="primary-small" weight="bold" color="primary-inverted">
-                Понимать инвестиции
-              </Typography.Text>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Разберётесь, как работают акции, фонды и облигации — без заумных слов
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-        </PureCell>
-        <PureCell>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={twoImg} width={48} height={48} alt="цифра 2" />
-          </PureCell.Graphics>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.Text view="primary-small" weight="bold" color="primary-inverted">
-                Управлять рисками
-              </Typography.Text>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Научитесь не ставить всё на одну карту и защищать свои деньги
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-        </PureCell>
-        <PureCell>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={threeImg} width={48} height={48} alt="цифра 3" />
-          </PureCell.Graphics>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.Text view="primary-small" weight="bold" color="primary-inverted">
-                Контролировать эмоции
-              </Typography.Text>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Поймёте, как не паниковать при падении и не терять голову при росте
+              <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary-inverted">
+                До 70% прибыли
+              </Typography.TitleResponsive>
+              <Gap size={8} />
+              <Typography.Text view="primary-small" color="secondary-inverted">
+                Ваша доля от профита составляет до 70%. Выплаты производятся регулярно по итогам 2 недель
               </Typography.Text>
             </PureCell.Main>
           </PureCell.Content>
@@ -186,147 +189,60 @@ export const App = () => {
           weight="medium"
           color="primary-inverted"
         >
-          Что получите в конце обучения
-        </Typography.TitleResponsive>
-        {itemsWG.map((item, index) => (
-          <PureCell key={index}>
-            <PureCell.Graphics verticalAlign="top">{item.icon}</PureCell.Graphics>
-            <PureCell.Content>
-              <PureCell.Main>
-                <Typography.Text view="primary-medium" color="primary-inverted">
-                  {item.title}
-                </Typography.Text>
-              </PureCell.Main>
-            </PureCell.Content>
-          </PureCell>
-        ))}
-
-        <Typography.TitleResponsive
-          style={{ marginTop: '12px' }}
-          tag="h2"
-          view="small"
-          font="system"
-          weight="medium"
-          color="primary-inverted"
-        >
-          Что получите в рамках обучения
+          Сколько вы можете заработать
         </Typography.TitleResponsive>
 
-        <PureCell className={appSt.box2}>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.TitleResponsive tag="h3" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                Прямые эфиры с персональным брокером
-              </Typography.TitleResponsive>
-              <Gap size={4} />
+        <div>
+          <Typography.Text view="primary-small" color="secondary-inverted">
+            Рост портфеля
+          </Typography.Text>
+          <div className={appSt.glassTabs}>
+            <div className={appSt.tab({ selected: selectedTab === '5%' })} onClick={() => setSelectedTab('5%')}>
+              <Typography.Text view="primary-small">5%</Typography.Text>
+            </div>
+            <div className={appSt.tab({ selected: selectedTab === '10%' })} onClick={() => setSelectedTab('10%')}>
+              <Typography.Text view="primary-small">10%</Typography.Text>
+            </div>
+            <div className={appSt.tab({ selected: selectedTab === '20%' })} onClick={() => setSelectedTab('20%')}>
+              <Typography.Text view="primary-small">20%</Typography.Text>
+            </div>
+          </div>
+        </div>
 
-              <Typography.Text view="secondary-large" color="primary-inverted">
-                Запись и эфиры доступны в приложении Альфа-Инвестиций
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={stud1} width={90} height={110} alt="эксперт" />
-          </PureCell.Graphics>
-        </PureCell>
+        <div className={appSt.glassBanner2}>
+          <div>
+            <Typography.TitleResponsive tag="h3" view="medium" font="system" weight="medium" color="primary-inverted">
+              {netIncome.toLocaleString('ru-RU')} ₽
+            </Typography.TitleResponsive>
+            <Typography.Text view="primary-small" color="secondary-inverted">
+              Ваша чистая прибыль
+            </Typography.Text>
+          </div>
 
-        <PureCell className={appSt.box2}>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.TitleResponsive tag="h3" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                Доступ к рекомендациям и стратегиям от наставника
-              </Typography.TitleResponsive>
-              <Gap size={4} />
-
-              <Typography.Text view="secondary-large" color="primary-inverted">
-                Готовые стратегии от наставника для минимизации рисков и повышения доходности портфеля
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={stud2} width={90} height={130} alt="эксперт" />
-          </PureCell.Graphics>
-        </PureCell>
-
-        <PureCell className={appSt.box2}>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.TitleResponsive tag="h3" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                Легкое и понятное обучение
-              </Typography.TitleResponsive>
-              <Gap size={4} />
-
-              <Typography.Text view="secondary-large" color="primary-inverted">
-                Краткий и доступный формат
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={stud3} width={99} height={90} alt="эксперт" />
-          </PureCell.Graphics>
-        </PureCell>
-
-        <PureCell className={appSt.box2}>
-          <PureCell.Content>
-            <PureCell.Main>
-              <Typography.TitleResponsive tag="h3" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                Доступ к закрытому каналу наставника
-              </Typography.TitleResponsive>
-              <Gap size={4} />
-              <Typography.Text view="secondary-large" color="primary-inverted">
-                Обсуждение сигналов на фондовом рынке и доступ к портфелю наставника
-              </Typography.Text>
-            </PureCell.Main>
-          </PureCell.Content>
-          <PureCell.Graphics verticalAlign="center">
-            <img src={stud4} width={106} height={130} alt="эксперт" />
-          </PureCell.Graphics>
-        </PureCell>
-
-        <Typography.TitleResponsive
-          style={{ marginTop: '12px' }}
-          tag="h2"
-          view="small"
-          font="system"
-          weight="medium"
-          color="primary-inverted"
-        >
-          Кто будет наставником
-        </Typography.TitleResponsive>
-
-        <div className={appSt.box}>
-          <PureCell>
-            <PureCell.Graphics verticalAlign="center">
-              <img src={expert} width={46} height={46} alt="эксперт" />
-            </PureCell.Graphics>
-            <PureCell.Content>
-              <PureCell.Main>
-                <Typography.TitleResponsive tag="h3" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                  Илья Шевченко
-                </Typography.TitleResponsive>
-                <Typography.Text view="secondary-large" color="secondary-inverted">
-                  Финансовый эксперт · Альфа-Банк
-                </Typography.Text>
-              </PureCell.Main>
-            </PureCell.Content>
-          </PureCell>
-
-          {itemsExpert.map((item, index) => (
-            <PureCell key={index}>
-              <PureCell.Graphics verticalAlign="top">{item.icon}</PureCell.Graphics>
-              <PureCell.Content>
-                <PureCell.Main>
-                  <Typography.Text view="secondary-large" weight="medium" color="primary-inverted">
-                    {item.title}
-                  </Typography.Text>
-                  <Gap size={8} />
-                  <Typography.Text view="secondary-large" color="secondary-inverted">
-                    {item.text}
-                  </Typography.Text>
-                </PureCell.Main>
-              </PureCell.Content>
-            </PureCell>
-          ))}
+          <div className={appSt.rowSb} style={{ marginTop: '12px' }}>
+            <Typography.Text view="secondary-large" color="secondary-inverted">
+              Управляете
+            </Typography.Text>
+            <Typography.Text view="primary-small" color="primary-inverted">
+              {SUM_HUNDLE.toLocaleString('ru-RU')} ₽
+            </Typography.Text>
+          </div>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="secondary-large" color="secondary-inverted">
+              Ваша доля
+            </Typography.Text>
+            <Typography.Text view="primary-small" color="primary-inverted">
+              {YOUR_PART}%
+            </Typography.Text>
+          </div>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="secondary-large" color="secondary-inverted">
+              Прибыль портфеля
+            </Typography.Text>
+            <Typography.Text view="primary-small" color="positive">
+              +{income.toLocaleString('ru-RU')} ₽
+            </Typography.Text>
+          </div>
         </div>
 
         <Typography.TitleResponsive
@@ -337,32 +253,73 @@ export const App = () => {
           weight="medium"
           color="primary-inverted"
         >
-          Потенциальная доходность
+          Сравните
         </Typography.TitleResponsive>
 
-        <Grid.Row gutter={{ mobile: 8, desktop: 16 }}>
-          <Grid.Col width="6">
-            <div className={appSt.box3}>
-              <Typography.TitleResponsive tag="h4" view="small" font="system" weight="semibold" color="primary-inverted">
-                +20%
-              </Typography.TitleResponsive>
+        <div className={appSt.glassBanner3}>
+          <div className={appSt.rowSb}>
+            <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
+              Свой счёт
+            </Typography.TitleResponsive>
+            <Status view="contrast" color="red" size={20}>
+              <Typography.Text view="secondary-small" weight="medium">
+                РИСК
+              </Typography.Text>
+            </Status>
+          </div>
+          <Typography.Text view="primary-small" color="secondary-inverted">
+            Вы рискуете своими 100 000 ₽. В случае убытка — деньги потеряны навсегда
+          </Typography.Text>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <CrossCompactMIcon color="#EF3124" />
               <Typography.Text view="primary-small" color="primary-inverted">
-                С наставником
+                Биржевые и брокерские комиссии
               </Typography.Text>
             </div>
-          </Grid.Col>
-          <Grid.Col width="6">
-            <div className={appSt.box3}>
-              <Typography.TitleResponsive tag="h4" view="small" font="system" weight="semibold" color="primary-inverted">
-                +4,5%
-              </Typography.TitleResponsive>
+            <Gap size={8} />
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <CheckmarkCompactMIcon color="#0CC44D" />
               <Typography.Text view="primary-small" color="primary-inverted">
-                Самостоятельно
+                Можно переносить позиции через ночь
               </Typography.Text>
             </div>
-          </Grid.Col>
-        </Grid.Row>
-        <div></div>
+          </div>
+        </div>
+        <div className={appSt.glassBanner3}>
+          <div className={appSt.rowSb}>
+            <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
+              Prop-трэйдинг
+            </Typography.TitleResponsive>
+            <Status view="contrast" color="green" size={20}>
+              <Typography.Text view="secondary-small" weight="medium">
+                Комфорт
+              </Typography.Text>
+            </Status>
+          </div>
+          <Typography.Text view="primary-small" color="secondary-inverted">
+            Вы управляете счётом на 100 000 ₽. Риск ограничен стоимостью участия
+          </Typography.Text>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <CheckmarkCompactMIcon color="#0CC44D" />
+
+              <Typography.Text view="primary-small" color="primary-inverted">
+                Только биржевые комиссии
+              </Typography.Text>
+            </div>
+            <Gap size={8} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <CrossCompactMIcon color="#EF3124" />
+              <Typography.Text view="primary-small" color="primary-inverted">
+                Нельзя переносить позиции через ночь
+              </Typography.Text>
+            </div>
+          </div>
+        </div>
 
         <Typography.TitleResponsive
           style={{ marginTop: '12px' }}
@@ -372,15 +329,156 @@ export const App = () => {
           weight="medium"
           color="primary-inverted"
         >
-          Дополнительные вопросы
+          Кому подойдёт
+        </Typography.TitleResponsive>
+
+        {forWhom.map((item, index) => (
+          <PureCell className={appSt.glassBanner} key={index}>
+            <PureCell.Graphics verticalAlign="top">
+              <img src={item.img} width={48} height={48} alt={item.title} />
+            </PureCell.Graphics>
+            <PureCell.Content>
+              <PureCell.Main>
+                <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary-inverted">
+                  {item.title}
+                </Typography.TitleResponsive>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  {item.subtitle}
+                </Typography.Text>
+              </PureCell.Main>
+            </PureCell.Content>
+          </PureCell>
+        ))}
+
+        <div>
+          <div
+            onClick={() => {
+              setCollapsedItem(items =>
+                items.includes('special') ? items.filter(item => item !== 'special') : [...items, 'special'],
+              );
+            }}
+            className={appSt.rowSb}
+          >
+            <Typography.TitleResponsive tag="h2" view="small" font="system" weight="medium" color="primary-inverted">
+              Основные правила
+            </Typography.TitleResponsive>
+            {collapsedItems.includes('special') ? (
+              <div style={{ flexShrink: 0 }}>
+                <ChevronUpMIcon color="#fff" />
+              </div>
+            ) : (
+              <div style={{ flexShrink: 0 }}>
+                <ChevronDownMIcon color="#fff" />
+              </div>
+            )}
+          </div>
+          <Collapse expanded={collapsedItems.includes('special')}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
+                Этап отбора
+              </Typography.TitleResponsive>
+
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  Цель по прибыли
+                </Typography.Text>
+                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
+                  2% за период
+                </Typography.Text>
+              </div>
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  Максимальная просадка
+                </Typography.Text>
+                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
+                  1%
+                </Typography.Text>
+              </div>
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  Период
+                </Typography.Text>
+                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
+                  2 недели
+                </Typography.Text>
+              </div>
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  Макс. размер позиции
+                </Typography.Text>
+                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
+                  100% от счёта
+                </Typography.Text>
+              </div>
+
+              <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
+                Этап финансирования
+              </Typography.TitleResponsive>
+
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  Максимальная просадка
+                </Typography.Text>
+                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
+                  1%
+                </Typography.Text>
+              </div>
+              <div className={appSt.rowSb}>
+                <Typography.Text view="primary-small" color="secondary-inverted">
+                  Макс. размер позиции
+                </Typography.Text>
+                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
+                  100% от счёта
+                </Typography.Text>
+              </div>
+            </div>
+          </Collapse>
+        </div>
+
+        <div className={appSt.dangerBox}>
+          <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
+            Запрещено:
+          </Typography.TitleResponsive>
+
+          <List tag="ul" marker="•" colorMarker="accent">
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary-inverted">
+                Сделки короче 1 минуты
+              </Typography.Text>
+            </List.Item>
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary-inverted">
+                За 5 минут до новостей нельзя открывать новые позиции
+              </Typography.Text>
+            </List.Item>
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary-inverted">
+                Держать открытыми позиции после 23:45 по мск
+              </Typography.Text>
+            </List.Item>
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary-inverted">
+                Нельзя торговать в выходные дни
+              </Typography.Text>
+            </List.Item>
+          </List>
+        </div>
+
+        <Typography.TitleResponsive
+          style={{ marginTop: '12px' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="medium"
+          color="primary-inverted"
+        >
+          Правила и FAQ
         </Typography.TitleResponsive>
 
         {faqs.map((faq, index) => (
           <div key={index}>
             <div
               onClick={() => {
-                window.gtag('event', '7096_children_faq', { faq: String(index + 1), var: 'var2' });
-
                 setCollapsedItem(items =>
                   items.includes(String(index + 1))
                     ? items.filter(item => item !== String(index + 1))
@@ -428,9 +526,9 @@ export const App = () => {
           view="primary"
           onClick={submit}
         >
-          Начать обучение
+          Пройти отбор
           <br />
-          <Typography.Text view="secondary-large">499 ₽ за весь курс</Typography.Text>
+          <Typography.Text view="secondary-large">Стоимость 2 000 ₽</Typography.Text>
         </Button>
       </div>
     </>

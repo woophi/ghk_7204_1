@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { recipe } from '@vanilla-extract/recipes';
 
 const bottomBtn = style({
   position: 'fixed',
@@ -15,38 +16,6 @@ const container = style({
   gap: '1rem',
 });
 
-const box = style({
-  display: 'flex',
-  padding: '1rem',
-  flexDirection: 'column',
-  gap: '1rem',
-  borderRadius: '1rem',
-  border: '0.2px solid #FFFFFF',
-  backdropFilter: 'blur(4px)',
-  boxShadow: '4px 4px 7.2px 0px #FFFFFF40 inset',
-  background: '#F2F3F533',
-});
-
-const box2 = style({
-  backgroundColor: '#FFFFFF33',
-  borderRadius: '12px',
-  paddingLeft: '1rem',
-  border: '0.2px solid #FFFFFF',
-  backdropFilter: 'blur(4px)',
-  boxShadow: '4px 4px 7.2px 0px #FFFFFF40 inset',
-});
-const box3 = style({
-  backgroundColor: '#FFFFFF33',
-  borderRadius: '8px',
-  padding: '12px',
-  border: '0.2px solid #FFFFFF',
-  backdropFilter: 'blur(4px)',
-  boxShadow: '4px 4px 7.2px 0px #FFFFFF40 inset',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '2px',
-});
-
 const rowSb = style({
   display: 'flex',
   justifyContent: 'space-between',
@@ -56,24 +25,90 @@ const rowSb = style({
 
 const glass = style({
   display: 'flex',
-  padding: '1rem 12px 28px',
+  padding: '0 1rem 24px',
   flexDirection: 'column',
-  gap: '1rem',
-  borderRadius: '24px',
-  border: '0.2px solid #FFFFFF',
-  backdropFilter: 'blur(4px)',
-  boxShadow: '4px 4px 7.2px 0px #FFFFFF40 inset',
-  background: '#F2F3F533',
+  alignItems: 'center',
+  gap: '24px',
+  borderRadius: '1rem',
   textAlign: 'center',
   justifyContent: 'center',
+  border: '1px solid #717171',
+  backgroundColor: '#2f2f30',
+});
+const glassBanner = style({
+  borderRadius: '1rem',
+  border: '1px solid #717171',
+  backgroundColor: '#2f2f30',
+  padding: '1rem',
+});
+const glassTabs = style({
+  borderRadius: '8px',
+  border: '1px solid #717171',
+  backgroundColor: '#2f2f30',
+  padding: '6px',
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+});
+
+const tab = recipe({
+  base: {
+    borderRadius: '8px',
+    height: '32px',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease-in-out',
+    color: '#fff',
+  },
+  variants: {
+    selected: {
+      true: {
+        backgroundColor: '#fff',
+        color: '#030306E0',
+      },
+    },
+  },
+});
+
+const glassBanner2 = style([
+  glassBanner,
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  },
+]);
+
+const glassBanner3 = style([
+  glassBanner,
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+  },
+]);
+
+const dangerBox = style({
+  border: '1px solid #FF755E',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
+  padding: '20px',
+  borderRadius: '1rem',
+  backgroundColor: '#392523',
 });
 
 export const appSt = {
   bottomBtn,
   container,
-  box,
-  box2,
-  box3,
   rowSb,
   glass,
+  glassBanner,
+  glassTabs,
+  tab,
+  glassBanner2,
+  glassBanner3,
+  dangerBox,
 };
