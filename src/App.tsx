@@ -102,9 +102,15 @@ export const App = () => {
   }, []);
 
   const submit = () => {
+    window.gtag('event', '7204_landing_next_click', { var: 'var1' });
     setLoading(true);
     setLoading(false);
     setThx(true);
+  };
+
+  const onTabClick = (tab: string) => {
+    window.gtag('event', '7204_calc_click', { var: 'var1' });
+    setSelectedTab(tab);
   };
 
   if (thxShow) {
@@ -197,13 +203,13 @@ export const App = () => {
             Рост портфеля
           </Typography.Text>
           <div className={appSt.glassTabs}>
-            <div className={appSt.tab({ selected: selectedTab === '5%' })} onClick={() => setSelectedTab('5%')}>
+            <div className={appSt.tab({ selected: selectedTab === '5%' })} onClick={() => onTabClick('5%')}>
               <Typography.Text view="primary-small">5%</Typography.Text>
             </div>
-            <div className={appSt.tab({ selected: selectedTab === '10%' })} onClick={() => setSelectedTab('10%')}>
+            <div className={appSt.tab({ selected: selectedTab === '10%' })} onClick={() => onTabClick('10%')}>
               <Typography.Text view="primary-small">10%</Typography.Text>
             </div>
-            <div className={appSt.tab({ selected: selectedTab === '20%' })} onClick={() => setSelectedTab('20%')}>
+            <div className={appSt.tab({ selected: selectedTab === '20%' })} onClick={() => onTabClick('20%')}>
               <Typography.Text view="primary-small">20%</Typography.Text>
             </div>
           </div>
@@ -350,7 +356,7 @@ export const App = () => {
           </PureCell>
         ))}
 
-        <div>
+        <div style={{ marginTop: '12px' }}>
           <div
             onClick={() => {
               setCollapsedItem(items =>
@@ -479,6 +485,7 @@ export const App = () => {
           <div key={index}>
             <div
               onClick={() => {
+                window.gtag('event', '7204_prop_faq_click', { faq: String(index + 1), var: 'var1' });
                 setCollapsedItem(items =>
                   items.includes(String(index + 1))
                     ? items.filter(item => item !== String(index + 1))

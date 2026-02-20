@@ -87,6 +87,7 @@ const glassBanner3 = style([
     display: 'flex',
     flexDirection: 'column',
     gap: '20px',
+    padding: '1rem 1rem 20px',
   },
 ]);
 
