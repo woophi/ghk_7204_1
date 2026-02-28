@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css';
-import { recipe } from '@vanilla-extract/recipes';
 
 const bottomBtn = style({
   position: 'fixed',
@@ -25,80 +24,41 @@ const rowSb = style({
 
 const glass = style({
   display: 'flex',
-  padding: '0 1rem 24px',
+  padding: '20px 1rem 0px',
   flexDirection: 'column',
   alignItems: 'center',
   gap: '24px',
   borderRadius: '1rem',
   textAlign: 'center',
   justifyContent: 'center',
-  border: '1px solid #717171',
-  backgroundColor: '#2f2f30',
+  backgroundColor: '#F2F3F5',
 });
-const glassBanner = style({
-  borderRadius: '1rem',
-  border: '1px solid #717171',
-  backgroundColor: '#2f2f30',
+const banner = style({
+  borderRadius: '24px',
+  backgroundColor: '#F2F3F5',
   padding: '1rem',
 });
-const glassTabs = style({
-  borderRadius: '8px',
-  border: '1px solid #717171',
-  backgroundColor: '#2f2f30',
-  padding: '6px',
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
-});
-
-const tab = recipe({
-  base: {
-    borderRadius: '8px',
-    height: '32px',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease-in-out',
-    color: '#fff',
-  },
-  variants: {
-    selected: {
-      true: {
-        backgroundColor: '#fff',
-        color: '#030306E0',
-      },
-    },
-  },
-});
-
-const glassBanner2 = style([
-  glassBanner,
-  {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  },
-]);
-
-const glassBanner3 = style([
-  glassBanner,
-  {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    padding: '1rem 1rem 20px',
-  },
-]);
-
-const dangerBox = style({
-  border: '1px solid #FF755E',
+const calcBanner = style({
+  borderRadius: '24px',
+  backgroundColor: '#F2F3F5',
+  padding: '1rem',
   display: 'flex',
   flexDirection: 'column',
-  gap: '1rem',
-  padding: '20px',
-  borderRadius: '1rem',
-  backgroundColor: '#392523',
+  gap: '8px',
+  color: '#7F7F83',
+});
+
+const compareTable = style({
+  borderRadius: '24px',
+  border: '1px solid #F2F3F5',
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'hidden',
+});
+
+const btmContent = style({
+  padding: 0,
 });
 
 export const appSt = {
@@ -106,10 +66,8 @@ export const appSt = {
   container,
   rowSb,
   glass,
-  glassBanner,
-  glassTabs,
-  tab,
-  glassBanner2,
-  glassBanner3,
-  dangerBox,
+  banner,
+  calcBanner,
+  compareTable,
+  btmContent,
 };

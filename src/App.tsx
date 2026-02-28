@@ -1,40 +1,100 @@
+import { BottomSheet } from '@alfalab/core-components/bottom-sheet/cssm';
 import { Button } from '@alfalab/core-components/button/cssm';
 import { Collapse } from '@alfalab/core-components/collapse/cssm';
+import { Divider } from '@alfalab/core-components/divider/cssm';
 import { Gap } from '@alfalab/core-components/gap/cssm';
 import { List } from '@alfalab/core-components/list/cssm';
 import { PureCell } from '@alfalab/core-components/pure-cell/cssm';
-import { Status } from '@alfalab/core-components/status/cssm';
+import { SliderInput } from '@alfalab/core-components/slider-input/cssm';
 import { Typography } from '@alfalab/core-components/typography/cssm';
-import { CategoryCommisionMIcon } from '@alfalab/icons-glyph/CategoryCommisionMIcon';
-import { CheckmarkCompactMIcon } from '@alfalab/icons-glyph/CheckmarkCompactMIcon';
+import { ArrowRightMIcon } from '@alfalab/icons-glyph/ArrowRightMIcon';
 import { ChevronDownMIcon } from '@alfalab/icons-glyph/ChevronDownMIcon';
 import { ChevronUpMIcon } from '@alfalab/icons-glyph/ChevronUpMIcon';
-import { CrossCompactMIcon } from '@alfalab/icons-glyph/CrossCompactMIcon';
-import { useEffect, useState } from 'react';
+import { DocumentLinesMIcon } from '@alfalab/icons-glyph/DocumentLinesMIcon';
+import { QuestionCircleMIcon } from '@alfalab/icons-glyph/QuestionCircleMIcon';
+
+import { SuperEllipse } from '@alfalab/core-components/icon-view/cssm/super-ellipse';
+
+import { ChangeEvent, Fragment, useEffect, useState } from 'react';
+
+import ban1 from './assets/ban1.png';
+import cond1 from './assets/cond1.png';
+import cond2 from './assets/cond2.png';
+import cond3 from './assets/cond3.png';
 import hb from './assets/hb.png';
 import img1 from './assets/img1.png';
 import img2 from './assets/img2.png';
 import img3 from './assets/img3.png';
-import { SelectionSlider } from './components/SelectionSlider';
+import reason1 from './assets/reason_1.png';
+import reason2 from './assets/reason_2.png';
 import { LS, LSKeys } from './ls';
 import { appSt } from './style.css';
 import { ThxLayout } from './thx/ThxLayout';
 
+const compareData = [
+  {
+    l: 'Торговля на свои деньги',
+    r: 'Торговля на наши деньги',
+  },
+  {
+    l: 'Рискуете своими 100 000 ₽',
+    r: 'Риск ограничен стоимостью участия',
+  },
+  {
+    l: 'Биржевые и брокерские комиссии',
+    r: 'Только брокерские комиссии',
+  },
+  {
+    l: 'Можно переносить через ночь',
+    r: 'Нельзя переносить через ночь',
+  },
+];
+
 const forWhom = [
   {
     title: 'Опытным трейдерам',
-    subtitle: 'Хочешь торговать крупнее без рисков',
+    subtitle: 'Крупные объёмы торговли без риска личного капитала',
     img: img1,
   },
   {
     title: 'Уверенным новичкам',
-    subtitle: 'Готов проверить себя в профессиональных условиях',
+    subtitle: 'Проверка себя в профессиональных условиях',
     img: img2,
   },
   {
     title: 'Тем, кто ищет альтернативу',
-    subtitle: 'Устал от давления собственных денег и нестабильной торговли',
+    subtitle: 'Свобода от давления собственных денег и нестабильности торговли',
     img: img3,
+  },
+];
+const reasons = [
+  {
+    title: 'Фиксированный риск',
+    subtitle: 'За 2 000 ₽ получите в управление брокерский счёт с суммой 100 000 ₽',
+    img: reason1,
+  },
+  {
+    title: 'Свободный вывод прибыли',
+    subtitle: 'После испытания — счёт на 100 000 ₽ и свободный вывод прибыли',
+    img: reason2,
+  },
+];
+
+const conditions = [
+  {
+    title: 'Оплачиваете участие',
+    subtitle: 'Участие в испытании стоит 2 000 ₽. Вы получаете в управление счёт на 100 000 ₽',
+    img: cond1,
+  },
+  {
+    title: 'Торгуете 2 недели',
+    subtitle: 'В течение 14 дней нужно показать стабильную торговлю',
+    img: cond2,
+  },
+  {
+    title: 'Зарабатываете +2%',
+    subtitle: 'Чтобы пройти испытание, необходимо показать +2% прибыли',
+    img: cond3,
   },
 ];
 
@@ -42,57 +102,74 @@ const faqs = [
   {
     question: 'Как и когда я получу выплату?',
     answers: [
-      'После успешного прохождения этапа отбора вы переходите на этап фондирования. Прибыль, заработанная на этом этапе, выплачивается по итогам торгового периода. Вы подаёте запрос на вывод в личном кабинете, и средства поступают на вашу карту или банковский счёт в течение 14 дней. Все условия выплат зафиксированы в договоре-оферте.',
-    ],
-  },
-  {
-    question: 'Сколько я могу заработать?',
-    answers: [
-      'Вы получаете до 70% прибыли, заработанной на Funded-аккаунте. Например, на счёте 100 000 ₽ при достижении +10% прибыли ваш доход составит 7 000 ₽ при вложении  всего 2 000 ₽ за участие',
+      'После успешного прохождения испытания вы переходите на этап фондирования. Прибыль, заработанная на нём, выплачивается по итогам торгового периода.',
+      'Вы подаёте запрос на вывод в личном кабинете, и средства поступают на вашу карту или банковский счёт в течение 14 дней. Все условия выплат зафиксированы в договоре-оферте.',
     ],
   },
   {
     question: 'Есть ли скрытые комиссии?',
     answers: [
-      'Нет. Вы оплачиваете только стоимость участия в отбор — это фиксированная сумма, указанная в тарифе. При торговле на счёте взимаются только биржевые комиссии (как при обычной торговле). Брокерская комиссия не взимается. Никаких подписок, ежемесячных платежей или дополнительных сборов.',
+      'Нет. Вы оплачиваете только стоимость участия в испытании — это фиксированная сумма, указанная в тарифе.',
+      'При торговле на счёте взимаются только биржевые комиссии (как при обычной торговле). Брокерская комиссия не взимается. Никаких подписок, ежемесячных платежей или дополнительных сборов.',
     ],
   },
   {
-    question: 'Что такое отбор и как он проходит?',
+    question: 'Что будет, если я не пройду испытание?',
     answers: [
-      'Этап отбора — это оценочный этап, на котором вы торгуете на виртуальном счёте с реальными рыночными котировками. Ваша цель — достичь прибыли +10% от баланса, не превысив максимальную просадку 1%, за минимум 5 торговых дней. Если условия выполнены — вы переходите на этап фондирования и начинаете зарабатывать.',
-    ],
-  },
-  {
-    question: 'Что будет, если я не пройду отбор?',
-    answers: [
-      'Если баланс вашего счёта снизится на 1% и более от стартового — отбор останавливается. Вы теряете только стоимость участия (от 2 000 ₽), а не весь виртуальный счёт. Вы можете попробовать снова — оплатив повторный отбор со скидкой. По статистике, 30-40% успешных трейдеров проходят не с первой попытки.',
+      'Если баланс вашего счёта снизится на 1% и более от стартового — испытание останавливается. Вы теряете только стоимость участия (от 2 000 ₽), а не весь виртуальный счёт.',
+      'Вы можете попробовать снова — оплатив повторный отбор со скидкой.',
     ],
   },
   {
     question: 'Рискую ли я своими деньгами?',
     answers: [
-      'Нет. Торговля ведётся на виртуальном счёте с реальными котировками. Ваш максимальный риск — это стоимость участия в отборе (от 2 000 ₽). Вы не можете потерять больше этой суммы. В отличие от торговли на собственном счёте, где убытки не ограничены.',
+      'Нет. Торговля ведётся на виртуальном счёте с реальными котировками.',
+      'Ваш максимальный риск — это стоимость участия в испытании (от 2 000 ₽). Вы не можете потерять больше этой суммы. В отличие от торговли на собственном счёте, где убытки не ограничены.',
     ],
   },
   {
     question: 'Почему нельзя совершать сделки короче 1 минуты?',
     answers: [
-      'Это ограничение защищает от манипулятивных стратегий (арбитраж задержек, эксплуатация спредов на новостях), которые не работают в реальной торговле. Мы оцениваем навык устойчивой прибыльной торговли, а не умение использовать технические уязвимости. Все крупные проп-компании имеют аналогичное ограничение.',
+      'Это ограничение защищает от манипулятивных стратегий (арбитраж задержек, эксплуатация спредов на новостях), которые не работают в реальной торговле.',
+      'Мы оцениваем навык устойчивой прибыльной торговли, а не умение использовать технические уязвимости. Все крупные проп-компании имеют аналогичное ограничение.',
     ],
   },
 ];
 
 const YOUR_PART = 70;
 const SUM_HUNDLE = 100_000;
-
+const MIN = 1;
+const MAX = 100;
 export const App = () => {
   const [loading, setLoading] = useState(false);
   const [collapsedItems, setCollapsedItem] = useState<string[]>(['special']);
-  const [selectedTab, setSelectedTab] = useState('5%');
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
+  const [value, setValue] = useState(10);
+  const [showRules, setShowRules] = useState(false);
+  const [showFaqs, setShowFaqs] = useState(false);
 
-  const income = ((selectedTab.replace('%', '') as unknown as number) / 100) * SUM_HUNDLE;
+  const handleInputChange = (
+    _: ChangeEvent<HTMLInputElement> | null,
+    {
+      value,
+    }: {
+      value: number | '';
+    },
+  ) => {
+    setValue(value !== '' ? value : MIN);
+  };
+
+  const handleSliderChange = ({ value }: { value: number }) => {
+    setValue(value);
+  };
+
+  const handleBlur = () => {
+    if (!value || value < MIN || value > MAX) {
+      setValue(Math.max(MIN, Math.min(MAX, parseFloat(value.toString()))));
+    }
+  };
+
+  const income = (value / 100) * SUM_HUNDLE;
   const netIncome = income * (YOUR_PART / 100);
 
   useEffect(() => {
@@ -108,11 +185,6 @@ export const App = () => {
     setThx(true);
   };
 
-  const onTabClick = (tab: string) => {
-    window.gtag('event', '7204_calc_click', { var: 'var1' });
-    setSelectedTab(tab);
-  };
-
   if (thxShow) {
     return <ThxLayout />;
   }
@@ -121,20 +193,25 @@ export const App = () => {
     <>
       <div className={appSt.container}>
         <div className={appSt.glass}>
-          <img src={hb} width="100%" height={156} alt="hb" style={{ objectFit: 'contain', margin: '0 auto' }} />
           <Typography.TitleResponsive
             style={{ maxWidth: '235px' }}
             tag="h1"
             view="large"
             font="system"
             weight="medium"
-            color="primary-inverted"
+            color="primary"
           >
-            Получите счёт на 100 000 ₽
+            Торгуйте
+            <br />
+            портфелем
+            <br />
+            до 100 000 ₽
           </Typography.TitleResponsive>
-          <Typography.Text view="primary-small" color="primary-inverted">
-            Оплатите <b>2 000 ₽</b> и получайте до 70% прибыли после успешного отбора
+          <Typography.Text view="primary-small" color="primary">
+            Забирайте до 70% прибыли
+            <br /> с фиксированным риском
           </Typography.Text>
+          <img src={hb} width="100%" height={150} alt="hb" style={{ objectFit: 'contain', margin: '0 auto' }} />
         </div>
 
         <Typography.TitleResponsive
@@ -143,20 +220,60 @@ export const App = () => {
           view="small"
           font="system"
           weight="medium"
-          color="primary-inverted"
+          color="primary"
         >
-          Как проходит отбор
+          Почему стоит участвовать
         </Typography.TitleResponsive>
 
-        <Typography.Text view="primary-small" color="secondary-inverted">
-          Необходимо достичь <span style={{ color: '#0CC44D' }}>+2%</span> доходности портфеля, не превышая просадку{' '}
-          <span style={{ color: '#EF3124' }}>−1%</span> в течение одной недели
-        </Typography.Text>
+        {reasons.map((item, index) => (
+          <PureCell key={index}>
+            <PureCell.Graphics verticalAlign="top">
+              <img src={item.img} width={48} height={48} alt={item.title} />
+            </PureCell.Graphics>
+            <PureCell.Content>
+              <PureCell.Main>
+                <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary">
+                  {item.title}
+                </Typography.TitleResponsive>
+                <Typography.Text view="primary-small" color="secondary">
+                  {item.subtitle}
+                </Typography.Text>
+              </PureCell.Main>
+            </PureCell.Content>
+          </PureCell>
+        ))}
 
-        <SelectionSlider />
+        <Typography.TitleResponsive
+          style={{ marginTop: '12px' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="medium"
+          color="primary"
+        >
+          Как проходит испытание
+        </Typography.TitleResponsive>
 
-        <Typography.Text view="primary-small" color="secondary-inverted">
-          Если вы не пройдете отбор, можно попробовать снова при повторной оплате
+        {conditions.map((item, index) => (
+          <PureCell key={index}>
+            <PureCell.Graphics verticalAlign="top">
+              <img src={item.img} width={48} height={48} alt={item.title} />
+            </PureCell.Graphics>
+            <PureCell.Content>
+              <PureCell.Main>
+                <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary">
+                  {item.title}
+                </Typography.TitleResponsive>
+                <Typography.Text view="primary-small" color="secondary">
+                  {item.subtitle}
+                </Typography.Text>
+              </PureCell.Main>
+            </PureCell.Content>
+          </PureCell>
+        ))}
+
+        <Typography.Text view="primary-small" color="secondary">
+          Если просадка портфеля более 1%, то испытание не пройдено. Можно повторить участие за 2 000 ₽
         </Typography.Text>
 
         <Typography.TitleResponsive
@@ -165,23 +282,22 @@ export const App = () => {
           view="small"
           font="system"
           weight="medium"
-          color="primary-inverted"
+          color="primary"
         >
-          После успешного прохождения
+          После успешного испытания
         </Typography.TitleResponsive>
 
-        <PureCell className={appSt.glassBanner}>
-          <PureCell.Graphics verticalAlign="top">
-            <CategoryCommisionMIcon color="#fff" />
+        <PureCell className={appSt.banner}>
+          <PureCell.Graphics verticalAlign="center">
+            <img src={ban1} width={48} height={48} alt="Banner" />
           </PureCell.Graphics>
           <PureCell.Content>
             <PureCell.Main>
-              <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary-inverted">
+              <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary">
                 До 70% прибыли
               </Typography.TitleResponsive>
-              <Gap size={8} />
-              <Typography.Text view="primary-small" color="secondary-inverted">
-                Ваша доля от профита составляет до 70%. Выплаты производятся регулярно по итогам 2 недель
+              <Typography.Text view="primary-small" color="secondary">
+                Ваша доля от профита составляет до 70%. Выплаты производятся регулярно по итогам периода
               </Typography.Text>
             </PureCell.Main>
           </PureCell.Content>
@@ -193,162 +309,22 @@ export const App = () => {
           view="small"
           font="system"
           weight="medium"
-          color="primary-inverted"
-        >
-          Сколько вы можете заработать
-        </Typography.TitleResponsive>
-
-        <div>
-          <Typography.Text view="primary-small" color="secondary-inverted">
-            Рост портфеля
-          </Typography.Text>
-          <div className={appSt.glassTabs}>
-            <div className={appSt.tab({ selected: selectedTab === '5%' })} onClick={() => onTabClick('5%')}>
-              <Typography.Text view="primary-small">5%</Typography.Text>
-            </div>
-            <div className={appSt.tab({ selected: selectedTab === '10%' })} onClick={() => onTabClick('10%')}>
-              <Typography.Text view="primary-small">10%</Typography.Text>
-            </div>
-            <div className={appSt.tab({ selected: selectedTab === '20%' })} onClick={() => onTabClick('20%')}>
-              <Typography.Text view="primary-small">20%</Typography.Text>
-            </div>
-          </div>
-        </div>
-
-        <div className={appSt.glassBanner2}>
-          <div>
-            <Typography.TitleResponsive tag="h3" view="medium" font="system" weight="medium" color="primary-inverted">
-              {netIncome.toLocaleString('ru-RU')} ₽
-            </Typography.TitleResponsive>
-            <Typography.Text view="primary-small" color="secondary-inverted">
-              Ваша чистая прибыль
-            </Typography.Text>
-          </div>
-
-          <div className={appSt.rowSb} style={{ marginTop: '12px' }}>
-            <Typography.Text view="secondary-large" color="secondary-inverted">
-              Управляете
-            </Typography.Text>
-            <Typography.Text view="primary-small" color="primary-inverted">
-              {SUM_HUNDLE.toLocaleString('ru-RU')} ₽
-            </Typography.Text>
-          </div>
-          <div className={appSt.rowSb}>
-            <Typography.Text view="secondary-large" color="secondary-inverted">
-              Ваша доля
-            </Typography.Text>
-            <Typography.Text view="primary-small" color="primary-inverted">
-              {YOUR_PART}%
-            </Typography.Text>
-          </div>
-          <div className={appSt.rowSb}>
-            <Typography.Text view="secondary-large" color="secondary-inverted">
-              Прибыль портфеля
-            </Typography.Text>
-            <Typography.Text view="primary-small" color="positive">
-              +{income.toLocaleString('ru-RU')} ₽
-            </Typography.Text>
-          </div>
-        </div>
-
-        <Typography.TitleResponsive
-          style={{ marginTop: '12px' }}
-          tag="h2"
-          view="small"
-          font="system"
-          weight="medium"
-          color="primary-inverted"
-        >
-          Сравните
-        </Typography.TitleResponsive>
-
-        <div className={appSt.glassBanner3}>
-          <div className={appSt.rowSb}>
-            <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
-              Свой счёт
-            </Typography.TitleResponsive>
-            <Status view="contrast" color="red" size={20}>
-              <Typography.Text view="secondary-small" weight="medium">
-                РИСК
-              </Typography.Text>
-            </Status>
-          </div>
-          <Typography.Text view="primary-small" color="secondary-inverted">
-            Вы рискуете своими 100 000 ₽. В случае убытка — деньги потеряны навсегда
-          </Typography.Text>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <CrossCompactMIcon color="#EF3124" />
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Биржевые и брокерские комиссии
-              </Typography.Text>
-            </div>
-            <Gap size={8} />
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <CheckmarkCompactMIcon color="#0CC44D" />
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Можно переносить позиции через ночь
-              </Typography.Text>
-            </div>
-          </div>
-        </div>
-        <div className={appSt.glassBanner3}>
-          <div className={appSt.rowSb}>
-            <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
-              Prop-трэйдинг
-            </Typography.TitleResponsive>
-            <Status view="contrast" color="green" size={20}>
-              <Typography.Text view="secondary-small" weight="medium">
-                Комфорт
-              </Typography.Text>
-            </Status>
-          </div>
-          <Typography.Text view="primary-small" color="secondary-inverted">
-            Вы управляете счётом на 100 000 ₽. Риск ограничен стоимостью участия
-          </Typography.Text>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <CheckmarkCompactMIcon color="#0CC44D" />
-
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Только биржевые комиссии
-              </Typography.Text>
-            </div>
-            <Gap size={8} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <CrossCompactMIcon color="#EF3124" />
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Нельзя переносить позиции через ночь
-              </Typography.Text>
-            </div>
-          </div>
-        </div>
-
-        <Typography.TitleResponsive
-          style={{ marginTop: '12px' }}
-          tag="h2"
-          view="small"
-          font="system"
-          weight="medium"
-          color="primary-inverted"
+          color="primary"
         >
           Кому подойдёт
         </Typography.TitleResponsive>
 
         {forWhom.map((item, index) => (
-          <PureCell className={appSt.glassBanner} key={index}>
+          <PureCell key={index}>
             <PureCell.Graphics verticalAlign="top">
               <img src={item.img} width={48} height={48} alt={item.title} />
             </PureCell.Graphics>
             <PureCell.Content>
               <PureCell.Main>
-                <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary-inverted">
+                <Typography.TitleResponsive tag="h4" view="xsmall" font="system" weight="medium" color="primary">
                   {item.title}
                 </Typography.TitleResponsive>
-                <Typography.Text view="primary-small" color="secondary-inverted">
+                <Typography.Text view="primary-small" color="secondary">
                   {item.subtitle}
                 </Typography.Text>
               </PureCell.Main>
@@ -356,118 +332,75 @@ export const App = () => {
           </PureCell>
         ))}
 
-        <div style={{ marginTop: '12px' }}>
-          <div
-            onClick={() => {
-              setCollapsedItem(items =>
-                items.includes('special') ? items.filter(item => item !== 'special') : [...items, 'special'],
-              );
-            }}
-            className={appSt.rowSb}
-          >
-            <Typography.TitleResponsive tag="h2" view="small" font="system" weight="medium" color="primary-inverted">
-              Основные правила
-            </Typography.TitleResponsive>
-            {collapsedItems.includes('special') ? (
-              <div style={{ flexShrink: 0 }}>
-                <ChevronUpMIcon color="#fff" />
-              </div>
-            ) : (
-              <div style={{ flexShrink: 0 }}>
-                <ChevronDownMIcon color="#fff" />
-              </div>
-            )}
+        <Typography.TitleResponsive
+          style={{ marginTop: '12px' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="medium"
+          color="primary"
+        >
+          Сколько можно заработать
+        </Typography.TitleResponsive>
+
+        <SliderInput
+          onClick={() => {
+            window.gtag('event', '7204_calc_prcnt_click', { var: 'var1' });
+          }}
+          block
+          value={value}
+          sliderValue={value}
+          onInputChange={handleInputChange}
+          onSliderChange={handleSliderChange}
+          onBlur={handleBlur}
+          min={MIN}
+          max={MAX}
+          pips={{
+            mode: 'values',
+            values: [MIN, MAX],
+            format: {
+              to: value => `${value}%`,
+            },
+          }}
+          range={{
+            min: 1,
+            max: 100,
+          }}
+          step={1}
+          label="Выберите процент роста портфеля"
+          labelView="outer"
+        />
+
+        <div className={appSt.calcBanner}>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small">Размер счёта</Typography.Text>
+            <Typography.Text view="primary-small" color="primary">
+              {SUM_HUNDLE.toLocaleString('ru-RU')} ₽
+            </Typography.Text>
           </div>
-          <Collapse expanded={collapsedItems.includes('special')}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                Этап отбора
-              </Typography.TitleResponsive>
-
-              <div className={appSt.rowSb}>
-                <Typography.Text view="primary-small" color="secondary-inverted">
-                  Цель по прибыли
-                </Typography.Text>
-                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
-                  2% за период
-                </Typography.Text>
-              </div>
-              <div className={appSt.rowSb}>
-                <Typography.Text view="primary-small" color="secondary-inverted">
-                  Максимальная просадка
-                </Typography.Text>
-                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
-                  1%
-                </Typography.Text>
-              </div>
-              <div className={appSt.rowSb}>
-                <Typography.Text view="primary-small" color="secondary-inverted">
-                  Период
-                </Typography.Text>
-                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
-                  2 недели
-                </Typography.Text>
-              </div>
-              <div className={appSt.rowSb}>
-                <Typography.Text view="primary-small" color="secondary-inverted">
-                  Макс. размер позиции
-                </Typography.Text>
-                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
-                  100% от счёта
-                </Typography.Text>
-              </div>
-
-              <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
-                Этап финансирования
-              </Typography.TitleResponsive>
-
-              <div className={appSt.rowSb}>
-                <Typography.Text view="primary-small" color="secondary-inverted">
-                  Максимальная просадка
-                </Typography.Text>
-                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
-                  1%
-                </Typography.Text>
-              </div>
-              <div className={appSt.rowSb}>
-                <Typography.Text view="primary-small" color="secondary-inverted">
-                  Макс. размер позиции
-                </Typography.Text>
-                <Typography.Text view="primary-small" weight="medium" color="primary-inverted">
-                  100% от счёта
-                </Typography.Text>
-              </div>
-            </div>
-          </Collapse>
-        </div>
-
-        <div className={appSt.dangerBox}>
-          <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary-inverted">
-            Запрещено:
-          </Typography.TitleResponsive>
-
-          <List tag="ul" marker="•" colorMarker="accent">
-            <List.Item>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Сделки короче 1 минуты
-              </Typography.Text>
-            </List.Item>
-            <List.Item>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                За 5 минут до новостей нельзя открывать новые позиции
-              </Typography.Text>
-            </List.Item>
-            <List.Item>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Держать открытыми позиции после 23:45 по мск
-              </Typography.Text>
-            </List.Item>
-            <List.Item>
-              <Typography.Text view="primary-small" color="primary-inverted">
-                Нельзя торговать в выходные дни
-              </Typography.Text>
-            </List.Item>
-          </List>
+          <Divider />
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small">Ваша доля от прибыли</Typography.Text>
+            <Typography.Text view="primary-small" color="primary">
+              {YOUR_PART}%
+            </Typography.Text>
+          </div>
+          <Divider />
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small">Полученная прибыль</Typography.Text>
+            <Typography.Text view="primary-small" color="primary">
+              {income.toLocaleString('ru-RU')} ₽
+            </Typography.Text>
+          </div>
+          <Divider />
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="primary">
+              Ваш заработок
+            </Typography.Text>
+            <Typography.Text view="primary-small" color="primary" weight="bold">
+              {netIncome.toLocaleString('ru-RU')} ₽
+            </Typography.Text>
+          </div>
         </div>
 
         <Typography.TitleResponsive
@@ -476,68 +409,299 @@ export const App = () => {
           view="small"
           font="system"
           weight="medium"
-          color="primary-inverted"
+          color="primary"
         >
-          Правила и FAQ
+          Сравнение подходов
         </Typography.TitleResponsive>
 
-        {faqs.map((faq, index) => (
-          <div key={index}>
-            <div
-              onClick={() => {
-                window.gtag('event', '7204_prop_faq_click', { faq: String(index + 1), var: 'var1' });
-                setCollapsedItem(items =>
-                  items.includes(String(index + 1))
-                    ? items.filter(item => item !== String(index + 1))
-                    : [...items, String(index + 1)],
-                );
-              }}
-              className={appSt.rowSb}
-            >
-              <Typography.Text view="primary-medium" weight="medium" color="primary-inverted">
-                {faq.question}
-              </Typography.Text>
-              {collapsedItems.includes(String(index + 1)) ? (
-                <div style={{ flexShrink: 0 }}>
-                  <ChevronUpMIcon color="#fff" />
-                </div>
-              ) : (
-                <div style={{ flexShrink: 0 }}>
-                  <ChevronDownMIcon color="#fff" />
-                </div>
-              )}
-            </div>
-            <Collapse expanded={collapsedItems.includes(String(index + 1))}>
-              {faq.answers.map((answerPart, answerIndex) => (
-                <Typography.Text
-                  key={answerIndex}
-                  tag="p"
-                  defaultMargins={false}
-                  view="primary-medium"
-                  color="primary-inverted"
-                >
-                  {answerPart}
-                </Typography.Text>
-              ))}
-            </Collapse>
+        <div className={appSt.compareTable}>
+          <div className={appSt.rowSb} style={{ padding: '12px' }}>
+            <Typography.Text view="primary-small" color="primary" weight="medium">
+              {compareData[0].l}
+            </Typography.Text>
+            <Typography.Text view="primary-small" color="positive" weight="medium">
+              {compareData[0].r}
+            </Typography.Text>
           </div>
-        ))}
+          <Divider />
+          {compareData.slice(1).map((item, index) => (
+            <Fragment key={index}>
+              <div className={appSt.rowSb} style={{ padding: '12px', backgroundColor: '#F2F3F5' }}>
+                <Typography.Text view="primary-small" color="primary" weight="medium">
+                  {item.l}
+                </Typography.Text>
+                <Typography.Text view="primary-small" color="primary" weight="medium">
+                  {item.r}
+                </Typography.Text>
+              </div>
+              {index !== compareData.slice(1).length - 1 && <Divider />}
+            </Fragment>
+          ))}
+        </div>
+
+        <Typography.TitleResponsive
+          style={{ marginTop: '12px' }}
+          tag="h2"
+          view="small"
+          font="system"
+          weight="medium"
+          color="primary"
+        >
+          Тариф
+        </Typography.TitleResponsive>
+
+        <div className={appSt.calcBanner} style={{ gap: '1rem' }}>
+          <div>
+            <Typography.Text view="primary-small" color="primary" weight="bold" defaultMargins={false} tag="p">
+              Trader
+            </Typography.Text>
+            <Typography.Text view="primary-small">Брокерский счёт</Typography.Text>
+            <Typography.TitleResponsive tag="h2" view="small" font="system" weight="medium" color="primary">
+              {SUM_HUNDLE.toLocaleString('ru-RU')} ₽
+            </Typography.TitleResponsive>
+          </div>
+
+          <div>
+            <div className={appSt.rowSb}>
+              <Typography.Text view="primary-small">Участие в испытании</Typography.Text>
+              <Typography.Text view="primary-small" color="primary">
+                2 000 ₽
+              </Typography.Text>
+            </div>
+            <Gap size={8} />
+            <Divider />
+            <Gap size={8} />
+
+            <div className={appSt.rowSb}>
+              <Typography.Text view="primary-small">Доплата после испытания</Typography.Text>
+              <Typography.Text view="primary-small" color="primary">
+                Не требуется
+              </Typography.Text>
+            </div>
+            <Gap size={8} />
+
+            <Divider />
+            <Gap size={8} />
+
+            <div className={appSt.rowSb}>
+              <Typography.Text view="primary-small">Доля результата</Typography.Text>
+              <Typography.Text view="primary-small" color="positive">
+                {YOUR_PART}%
+              </Typography.Text>
+            </div>
+          </div>
+        </div>
+        <div />
+
+        <PureCell
+          onClick={() => {
+            window.gtag('event', '7204_main_rules', { var: 'var1' });
+            setShowRules(true);
+          }}
+        >
+          <PureCell.Graphics verticalAlign="top">
+            <DocumentLinesMIcon />
+          </PureCell.Graphics>
+          <PureCell.Content>
+            <PureCell.Main>
+              <Typography.Text view="primary-medium" color="primary">
+                Основные правила
+              </Typography.Text>
+            </PureCell.Main>
+          </PureCell.Content>
+        </PureCell>
+        <div />
+
+        <PureCell
+          onClick={() => {
+            window.gtag('event', '7204_prop_faq_start_click', { var: 'var1' });
+            setShowFaqs(true);
+          }}
+        >
+          <PureCell.Graphics verticalAlign="top">
+            <QuestionCircleMIcon />
+          </PureCell.Graphics>
+          <PureCell.Content>
+            <PureCell.Main>
+              <Typography.Text view="primary-medium" color="primary">
+                Вопросы и ответы
+              </Typography.Text>
+            </PureCell.Main>
+          </PureCell.Content>
+        </PureCell>
       </div>
-      <Gap size={96} />
+      <Gap size={128} />
 
       <div className={appSt.bottomBtn}>
         <Button
-          style={{ backgroundColor: '#F2F3F5', color: '#030306E0' }}
           loading={loading}
+          size={72}
           block
           view="primary"
           onClick={submit}
+          style={{ padding: '1rem', borderRadius: '24px' }}
         >
-          Пройти отбор
-          <br />
-          <Typography.Text view="secondary-large">Стоимость 2 000 ₽</Typography.Text>
+          <div className={appSt.rowSb}>
+            <div style={{ textAlign: 'left' }}>
+              <Typography.Text view="primary-medium" color="primary-inverted" weight="medium" tag="p" defaultMargins={false}>
+                Принять участие
+              </Typography.Text>
+              <Typography.Text view="secondary-large" style={{ color: '#7F7F83' }}>
+                Стоимость испытания 2 000 ₽
+              </Typography.Text>
+            </div>
+            <SuperEllipse backgroundColor="#FFFFFF" size={48}>
+              <ArrowRightMIcon color="#212124" />
+            </SuperEllipse>
+          </div>
         </Button>
       </div>
+
+      <BottomSheet
+        open={showFaqs}
+        onClose={() => {
+          setShowFaqs(false);
+        }}
+        contentClassName={appSt.btmContent}
+        title="Вопросы и ответы"
+        hasCloser
+        stickyHeader
+      >
+        <div className={appSt.container}>
+          {faqs.map((faq, index) => (
+            <div key={index}>
+              <div
+                onClick={() => {
+                  window.gtag('event', '7204_prop_faq_click', { faq: String(index + 1), var: 'var1' });
+                  setCollapsedItem(items =>
+                    items.includes(String(index + 1))
+                      ? items.filter(item => item !== String(index + 1))
+                      : [...items, String(index + 1)],
+                  );
+                }}
+                className={appSt.rowSb}
+              >
+                <Typography.Text view="primary-medium" weight="medium" color="primary">
+                  {faq.question}
+                </Typography.Text>
+                {collapsedItems.includes(String(index + 1)) ? (
+                  <div style={{ flexShrink: 0 }}>
+                    <ChevronUpMIcon color="#fff" />
+                  </div>
+                ) : (
+                  <div style={{ flexShrink: 0 }}>
+                    <ChevronDownMIcon color="#fff" />
+                  </div>
+                )}
+              </div>
+              <Collapse expanded={collapsedItems.includes(String(index + 1))}>
+                {faq.answers.map((answerPart, answerIndex) => (
+                  <Typography.Text key={answerIndex} tag="p" defaultMargins={false} view="primary-medium" color="primary">
+                    {answerPart}
+                  </Typography.Text>
+                ))}
+              </Collapse>
+            </div>
+          ))}
+        </div>
+      </BottomSheet>
+      <BottomSheet
+        open={showRules}
+        onClose={() => {
+          setShowRules(false);
+        }}
+        contentClassName={appSt.btmContent}
+        title="Основные правила"
+        hasCloser
+        stickyHeader
+      >
+        <div className={appSt.container}>
+          <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary">
+            Этап отбора
+          </Typography.TitleResponsive>
+
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="secondary">
+              Цель по прибыли
+            </Typography.Text>
+            <Typography.Text view="primary-small" weight="medium" color="primary">
+              2% за период
+            </Typography.Text>
+          </div>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="secondary">
+              Максимальная просадка
+            </Typography.Text>
+            <Typography.Text view="primary-small" weight="medium" color="primary">
+              1%
+            </Typography.Text>
+          </div>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="secondary">
+              Минимум торговых дней
+            </Typography.Text>
+            <Typography.Text view="primary-small" weight="medium" color="primary">
+              2 недели
+            </Typography.Text>
+          </div>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="secondary">
+              Макс. размер позиции
+            </Typography.Text>
+            <Typography.Text view="primary-small" weight="medium" color="primary">
+              100% от счёта
+            </Typography.Text>
+          </div>
+
+          <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary">
+            Этап реальной торговли
+          </Typography.TitleResponsive>
+
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="secondary">
+              Максимальная просадка
+            </Typography.Text>
+            <Typography.Text view="primary-small" weight="medium" color="primary">
+              1%
+            </Typography.Text>
+          </div>
+          <div className={appSt.rowSb}>
+            <Typography.Text view="primary-small" color="secondary">
+              Макс. размер позиции
+            </Typography.Text>
+            <Typography.Text view="primary-small" weight="medium" color="primary">
+              100% от счёта
+            </Typography.Text>
+          </div>
+
+          <Typography.TitleResponsive tag="h5" view="xsmall" font="system" weight="medium" color="primary">
+            Запрещено:
+          </Typography.TitleResponsive>
+
+          <List tag="ul" marker="•" colorMarker="accent">
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary">
+                Сделки короче 1 минуты
+              </Typography.Text>
+            </List.Item>
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary">
+                За 5 минут до новостей нельзя открывать новые позиции
+              </Typography.Text>
+            </List.Item>
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary">
+                Держать открытыми позиции после 23:45 по мск
+              </Typography.Text>
+            </List.Item>
+            <List.Item>
+              <Typography.Text view="primary-small" color="primary">
+                Нельзя торговать в выходные дни
+              </Typography.Text>
+            </List.Item>
+          </List>
+        </div>
+      </BottomSheet>
     </>
   );
 };
